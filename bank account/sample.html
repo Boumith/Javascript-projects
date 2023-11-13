@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Bank Account Management</title>
+    <style>
+       *{
+        position: relative;
+        text-align: center;
+        padding-top: 5px;
+       }
+
+
+    </style>
+</head>
+
+<body>
+    <h1>Welcome to your ICICI Bank Account</h1>
+    <div id="account-info">
+        <p>Account Holder Name: <span id="account-holder"><input type="text" placeholder="Soumith" required ></span></p>
+        <p>Account Type: <span id="account-type"><select required>
+            <option> </option>
+            <option> Savings</option>
+            <option> Current</option>
+        </select></span></p>
+        <p>Balance: $<span id="balance">1000</span></p>
+    </div>
+    <div id="actions">
+        <label for="transaction-type">Select Transaction:</label>
+        <select id="transaction-type">
+            <option></option>
+            <option value="deposit">Deposit</option>
+            <option value="withdraw">Withdraw</option>
+            <option value="check-balance">Check Balance</option>
+        </select>
+        <input type="number" id="amount" placeholder="Amount">
+        <button onclick="performTransaction()">Submit</button>
+        <p id="transaction-result"></p>
+    </div>
+
+    <script>
+        class BankAccount {
+            constructor(holderName, accountType) {
+                this.holderName = holderName;
+                this.accountType = accountType;
+                this.balance = 1000; // Initial balance
+            }
+
+            deposit(amount) {
+                if (amount <= 0) {
+                    document.write( Error("Amount must be greater than 0."));
+                }
+                this.balance += amount;
+            }
+
+            withdraw(amount) {
+                if (amount <= 0) {
+                    throw new Error("Amount must be greater than 0.");
+                }
+                if (amount > this.balance) {
+                    throw new Error("Insufficient funds.");
+                }
+                this.balance -= amount;
+            }
+
+            checkBalance() {
+                return this.balance;
+            }
+        }
+
+        let account = new BankAccount();
+
+        function performTransaction() {
+            const transactionType = document.getElementById("transaction-type").value;
+            const amount = parseFloat(document.getElementById("amount").value);
+            const transactionResult = document.getElementById("transaction-result");
+
+            try {
+                switch (transactionType) {
+                    case "deposit":
+                        account.deposit(amount);
+                        transactionResult.textContent = `Deposited $${amount}. New balance: $${account.checkBalance()}`;
+                        break;
+                    case "withdraw":
+                        account.withdraw(amount);
+                        transactionResult.textContent = `Withdrawn $${amount}. New balance: $${account.checkBalance()}`;
+                        break;
+                    case "check-balance":
+                        transactionResult.textContent = `Balance: $${account.checkBalance()}`;
+                        break;
+                    default:
+                        throw new Error("Invalid transaction type.");
+                }
+            } catch (error) {
+                transactionResult.textContent = `Error: ${error.message}`;
+            } finally {
+                document.getElementById("amount").value = "";
+            }
+        }
+    </script>
+</body>
+
+</html>
